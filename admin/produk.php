@@ -1,36 +1,3 @@
-<?php
-session_start();
-include "koneksi.php";
-
-// Cek apakah ada parameter ID di URL
-if (!isset($_GET['id'])) {
-    echo "<script>alert('ID tidak ditemukan!'); window.location.href = 'kategori.php';</script>";
-    exit;
-}
-
-$id = $_GET['id'];
-$sql = mysqli_query($koneksi, "SELECT * FROM tb_ktg WHERE id_ktg = '$id'");
-$data = mysqli_fetch_array($sql);
-
-// Cek apakah data ditemukan
-if (!$data) {
-    echo "<script>alert('Data tidak ditemukan!'); window.location.href = 'kategori.php';</script>";
-    exit;
-}
-
-if (isset($_POST['simpan'])) {
-    $nm_kategori = $_POST['nm_kategori'];
-
-    $query = mysqli_query($koneksi, "UPDATE tb_ktg SET nm_ktg = '$nm_kategori' WHERE id_ktg = '$id'");
-    if ($query) {
-        echo "<script>alert('Data berhasil diubah!'); window.location.href = 'kategori.php';</script>";
-    } else {
-        echo "<script>alert('Data gagal diubah!'); window.location.href = 'kategori.php';</script>";
-    }
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -38,7 +5,7 @@ if (isset($_POST['simpan'])) {
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Kategori Produk - Outfitz Admin</title>
+    <title>Produk - Outfitz Admin</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -61,6 +28,7 @@ if (isset($_POST['simpan'])) {
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -76,6 +44,13 @@ if (isset($_POST['simpan'])) {
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
 
+        <div class="search-bar">
+            <form class="search-form d-flex align-items-center" method="GET" action="">
+                <input type="text" name="query" placeholder="Search" title="Enter search keyword" value="<?php echo isset($_GET['query']) ? htmlspecialchars($_GET['query']) : ''; ?>">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+        </div>
+
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
 
@@ -85,15 +60,16 @@ if (isset($_POST['simpan'])) {
                     </a>
                 </li><!-- End Search Icon-->
 
+                <li class="nav-item dropdown">
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                    </a><!-- End Profile Image Icon -->
+                    </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
-                            <h6><?php echo isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Guest'; ?></h6>
+                            <h6>Kevin Anderson</h6>
                             <span>Admin</span>
                         </li>
                         <li>
@@ -124,14 +100,14 @@ if (isset($_POST['simpan'])) {
             </li><!-- End Beranda Nav -->
 
             <li class="nav-item">
-                <a class="nav-link" href="kategori.php">
+                <a class="nav-link collapsed" href="kategori.php">
                     <i class="bi bi-tags"></i>
                     <span>Kategori Produk</span>
                 </a>
             </li><!-- End Kategori Produk Page Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="produk.php">
+                <a class="nav-link" href="produk.php">
                     <i class="bi bi-shop"></i>
                     <span>Produk</span>
                 </a>
@@ -170,34 +146,112 @@ if (isset($_POST['simpan'])) {
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Kategori Produk</h1>
+            <h1>Produk</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-                    <li class="breadcrumb-item">Kategori Produk</li>
-                    <li class="breadcrumb-item active">Edit</li>
+                    <li class="breadcrumb-item active">Produk</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
 
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="t_produk.php" class="btn btn-primary mt-3">
+                            <i class="bi bi-plus-lg"></i> Tambah Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <section class="section">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <form class="row g-3 mt-2" method="post">
-                                <div class="col-12">
-                                    <label for="nm_kategori" class="form-label">Nama Kategori</label>
-                                    <input type="text" class="form-control" id="nm_kategori" name="nm_kategori" placeholder="Masukkan Nama Kategori Produk" value="<?php echo htmlspecialchars($data['nm_ktg']); ?>">
-                                </div>
-                                <div class="text-center">
-                                    <button type="reset" class="btn btn-secondary">Reset</button>
-                                    <button type="submit" class="btn btn-primary" name="simpan">Simpan</button>
-                                </div>
-                            </form>
+                            <!-- Table with stripped rows -->
+                            <table class="table table-striped mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Produk</th>
+                                        <th>Harga</th>
+                                        <th>Stok</th>
+                                        <th>Deskripsi</th>
+                                        <th>Kategori</th>
+                                        <th>Gambar</th>
+                                        <th>Size</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    include "koneksi.php";
+                                    $no = 1;
+
+                                    // Ambil keyword pencarian dari GET
+                                    $query = isset($_GET['query']) ? mysqli_real_escape_string($koneksi, $_GET['query']) : '';
+
+                                    // Tambahkan WHERE jika query tidak kosong
+                                    $sql_query = "SELECT tb_produk.*, tb_ktg.nm_ktg 
+              FROM tb_produk 
+              LEFT JOIN tb_ktg ON tb_produk.id_ktg = tb_ktg.id_ktg";
+
+                                    if (!empty($query)) {
+                                        $sql_query .= " WHERE tb_produk.nm_produk LIKE '%$query%' 
+                    OR tb_kategori.nm_ktg LIKE '%$query%'
+                    OR tb_produk.ket LIKE '%$query%'";
+                                    }
+
+                                    $sql = mysqli_query($koneksi, $sql_query);
+
+                                    if (mysqli_num_rows($sql) > 0) {
+                                        while ($hasil = mysqli_fetch_array($sql)) {
+                                    ?>
+                                            <tr>
+                                                <td><?php echo $no++; ?></td>
+                                                <td><?php echo $hasil['nm_produk']; ?></td>
+                                                <td>Rp <?php echo number_format($hasil['harga'], 0, ',', '.'); ?></td>
+                                                <td><?php echo $hasil['stok']; ?></td>
+                                                <td><?php echo $hasil['ket']; ?></td>
+                                                <td><?php echo $hasil['nm_ktg']; ?></td>
+                                                <td>
+                                                    <?php if (!empty($hasil['gambar'])) { ?>
+                                                        <img src="produk_img/<?php echo $hasil['gambar']; ?>" width="100">
+                                                    <?php } else { ?>
+                                                        Tidak ada gambar
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?php echo $hasil['size']; ?></td>
+                                                <td>
+                                                    <a href="e_produk.php?id=<?php echo $hasil['id_produk']; ?>" class="btn btn-warning">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                    <a href="h_produk.php?id=<?php echo $hasil['id_produk']; ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <tr>
+                                            <td colspan="9" class="text-center">Belum Ada Data</td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                            <!-- End Table with stripped rows -->
 
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
