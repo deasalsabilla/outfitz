@@ -2,13 +2,13 @@
 <html lang="en">
 
 
-<!-- molla/category-list.html  22 Nov 2019 10:02:52 GMT -->
+<!-- molla/cart.html  22 Nov 2019 09:55:06 GMT -->
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Belanja - Outfitz</title>
+    <title>Keranjang - Outfitz</title>
     <meta name="keywords" content="HTML5 Template">
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
@@ -28,9 +28,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
     <!-- Main CSS File -->
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/plugins/owl-carousel/owl.carousel.css">
-    <link rel="stylesheet" href="assets/css/plugins/magnific-popup/magnific-popup.css">
-    <link rel="stylesheet" href="assets/css/plugins/nouislider/nouislider.css">
 </head>
 
 <body>
@@ -43,11 +40,11 @@
                             <span class="sr-only">Toggle mobile menu</span>
                             <i class="icon-bars"></i>
                         </button>
+
                         <a href="index.php" class="logo">
                             <span style="font-size: 50px; font-weight: bold; font-family: Arial, sans-serif;">Outfitz</span>
                         </a>
                     </div><!-- End .header-left -->
-
                     <nav class="main-nav" style="flex: 1; text-align: center;">
                         <ul class="menu sf-arrows" style="display: inline-flex; gap: 30px; list-style: none; margin: 0; padding: 0;">
                             <li><a href="index.php" class="sf-with-ul">Beranda</a></li>
@@ -55,18 +52,7 @@
                             <li><a href="contact.php" class="sf-with-ul">Hubungi Kami</a></li>
                         </ul>
                     </nav>
-
                     <div class="header-right d-flex align-items-center">
-                        <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
-                            <form action="#" method="get">
-                                <div class="header-search-wrapper">
-                                    <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
-                                </div><!-- End .header-search-wrapper -->
-                            </form>
-                        </div><!-- End .header-search -->
-
                         <div class="dropdown cart-dropdown">
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
@@ -146,252 +132,121 @@
         <main class="main">
             <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
                 <div class="container">
-                    <h1 class="page-title"><span>Belanja</span></h1>
+                    <h1 class="page-title"><span>Keranjang Belanja</span></h1>
                 </div><!-- End .container -->
             </div><!-- End .page-header -->
-            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav">
                 <div class="container">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Belanja</li>
+                        <li class="breadcrumb-item"><a href="index.html">Beranda</a></li>
+                        <li class="breadcrumb-item"><a href="#">Belanja</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Keranjang Belanja</li>
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
             <div class="page-content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-9">
-                            <div class="toolbox">
-                                <div class="toolbox-right">
-                                    <div class="toolbox-sort">
-                                        <label for="sortby"></label>
-                                        <div>
-                                            <option value="rating"></option>
-                                            <option value="date"></option>
-                                            </select>
-                                        </div>
-                                    </div><!-- End .toolbox-sort -->
-                                    <div class="toolbox-layout">
-                                    </div><!-- End .toolbox-layout -->
-                                </div><!-- End .toolbox-right -->
-                            </div><!-- End .toolbox -->
+                <div class="cart">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <table class="table table-cart table-mobile">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Produk</th>
+                                            <th>Harga</th>
+                                            <th>Jumlah</th>
+                                            <th>Total</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
 
-                            <div class="products mb-3">
-                                <?php
-                                include 'admin/koneksi.php'; // Pastikan file koneksi ke database disertakan
+                                    <tbody>
+                                        <tr>
+                                            <td class="product-col">
+                                                <div class="product">
+                                                    <figure class="product-media">
+                                                        <a href="#">
+                                                            <img src="assets/images/products/table/product-1.jpg" alt="Product image">
+                                                        </a>
+                                                    </figure>
 
-                                $query = "SELECT p.id_produk, p.nm_produk, p.harga, p.stok, p.ket, p.gambar, p.size, k.nm_ktg
-          FROM tb_produk p
-          JOIN tb_ktg k ON p.id_ktg = k.id_ktg";
+                                                    <h3 class="product-title">
+                                                        <a href="#">Beige knitted elastic runner shoes</a>
+                                                    </h3><!-- End .product-title -->
+                                                </div><!-- End .product -->
+                                            </td>
+                                            <td class="price-col">Rp. 0</td>
+                                            <td class="quantity-col">
+                                                <div class="cart-product-quantity">
+                                                    <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                                </div><!-- End .cart-product-quantity -->
+                                            </td>
+                                            <td class="total-col">Rp. 0</td>
+                                            <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="product-col">
+                                                <div class="product">
+                                                    <figure class="product-media">
+                                                        <a href="#">
+                                                            <img src="assets/images/products/table/product-2.jpg" alt="Product image">
+                                                        </a>
+                                                    </figure>
 
-                                $result = mysqli_query($koneksi, $query);
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                ?>
-                                    <div class="product product-list">
-                                        <div class="row">
-                                            <div class="col-6 col-lg-3">
-                                                <figure class="product-media">
-                                                    <a href="product-detail.php?id=<?php echo $row['id_produk']; ?>">
-                                                        <img src="admin/produk_img/<?php echo $row['gambar']; ?>" alt="Product image" class="product-image uniform-img">
-                                                    </a>
-                                                </figure>
-                                            </div>
+                                                    <h3 class="product-title">
+                                                        <a href="#">Blue utility pinafore denim dress</a>
+                                                    </h3><!-- End .product-title -->
+                                                </div><!-- End .product -->
+                                            </td>
+                                            <td class="price-col">Rp. 0</td>
+                                            <td class="quantity-col">
+                                                <div class="cart-product-quantity">
+                                                    <input type="number" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                                </div><!-- End .cart-product-quantity -->
+                                            </td>
+                                            <td class="total-col">Rp. 0</td>
+                                            <td class="remove-col"><button class="btn-remove"><i class="icon-close"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table><!-- End .table table-wishlist -->
 
-                                            <div class="col-6 col-lg-3 order-lg-last">
-                                                <div class="product-list-action">
-                                                    <div class="product-price">
-                                                        Rp. <?php echo number_format($row['harga'], 0, ',', '.'); ?>
-                                                    </div>
+                                <div class="cart-bottom">
+                                    <a href="#" class="btn btn-outline-dark-2"><span>UPDATE KERANJANG</span><i class="icon-refresh"></i></a>
+                                </div><!-- End .cart-bottom -->
+                            </div><!-- End .col-lg-9 -->
+                            <aside class="col-lg-3">
+                                <div class="summary summary-cart">
+                                    <h3 class="summary-title">Total Keranjang</h3><!-- End .summary-title -->
 
-                                                    <div class="product-action">
-                                                        <a href="#" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
-                                                        <a href="#" class="btn-product btn-compare" title="Compare"><span>compare</span></a>
-                                                    </div>
-                                                    <a href="detail_produk.php?id_produk=<?php echo $row['id_produk']; ?>" class="btn-product btn-cart"><span>Keranjang</span></a>
-                                                </div>
-                                            </div>
+                                    <table class="table table-summary">
+                                        <tbody>
+                                            <tr class="summary-subtotal">
+                                                <td>Subtotal:</td>
+                                                <td>Rp. 0</td>
+                                            </tr><!-- End .summary-subtotal -->
+                                            <tr class="summary-subtotal">
+                                                <td>Diskon:</td>
+                                                <td>Rp. 0</td>
+                                            </tr><!-- End .summary-subtotal -->
+                                            <tr class="summary-subtotal">
+                                                <td>Total Bayar:</td>
+                                                <td>Rp. 0</td>
+                                            </tr><!-- End .summary-subtotal -->
 
-                                            <div class="col-lg-6">
-                                                <div class="product-body product-action-inner">
-                                                    <div class="product-cat">
-                                                        <a href="#"><?php echo $row['nm_ktg']; ?></a>
-                                                    </div>
-                                                    <h3 class="product-title"><a href="product-detail.php?id=<?php echo $row['id_produk']; ?>"><?php echo $row['nm_produk']; ?></a></h3>
+                                            <tr class="summary-total">
+                                                <td>Total:</td>
+                                                <td>Rp. 0</td>
+                                            </tr><!-- End .summary-total -->
+                                        </tbody>
+                                    </table><!-- End .table table-summary -->
 
-                                                    <div class="product-content">
-                                                        <p><?php echo $row['ket']; ?></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                            </div><!-- End .products -->
-
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination">
-                                    <li class="page-item disabled">
-                                        <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
-                                            <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
-                                        </a>
-                                    </li>
-                                    <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item-total">of 6</li>
-                                    <li class="page-item">
-                                        <a class="page-link page-link-next" href="#" aria-label="Next">
-                                            Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div><!-- End .col-lg-9 -->
-                        <aside class="col-lg-3 order-lg-first">
-                            <div class="sidebar sidebar-shop">
-                                <div class="widget widget-clean">
-                                    <label>Filters:</label>
-                                    <a href="#" class="sidebar-filter-clear">Clean All</a>
-                                </div><!-- End .widget widget-clean -->
-
-                                <div class="widget widget-collapsible">
-                                    <h3 class="widget-title">
-                                        <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-                                            Category
-                                        </a>
-                                    </h3><!-- End .widget-title -->
-
-                                    <div class="collapse show" id="widget-1">
-                                        <div class="widget-body">
-                                            <div class="filter-items filter-items-count">
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-1">
-                                                        <label class="custom-control-label" for="cat-1">Dresses</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">3</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-2">
-                                                        <label class="custom-control-label" for="cat-2">T-shirts</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">0</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-3">
-                                                        <label class="custom-control-label" for="cat-3">Bags</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">4</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-4">
-                                                        <label class="custom-control-label" for="cat-4">Jackets</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">2</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-5">
-                                                        <label class="custom-control-label" for="cat-5">Shoes</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">2</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-6">
-                                                        <label class="custom-control-label" for="cat-6">Jumpers</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">1</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-7">
-                                                        <label class="custom-control-label" for="cat-7">Jeans</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">1</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-8">
-                                                        <label class="custom-control-label" for="cat-8">Sportwear</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">0</span>
-                                                </div><!-- End .filter-item -->
-                                            </div><!-- End .filter-items -->
-                                        </div><!-- End .widget-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .widget -->
-
-                                <div class="widget widget-collapsible">
-                                    <h3 class="widget-title">
-                                        <a data-toggle="collapse" href="#widget-2" role="button" aria-expanded="true" aria-controls="widget-2">
-                                            Size
-                                        </a>
-                                    </h3><!-- End .widget-title -->
-
-                                    <div class="collapse show" id="widget-2">
-                                        <div class="widget-body">
-                                            <div class="filter-items">
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-1">
-                                                        <label class="custom-control-label" for="size-1">XS</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-2">
-                                                        <label class="custom-control-label" for="size-2">S</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" checked id="size-3">
-                                                        <label class="custom-control-label" for="size-3">M</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" checked id="size-4">
-                                                        <label class="custom-control-label" for="size-4">L</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-5">
-                                                        <label class="custom-control-label" for="size-5">XL</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-6">
-                                                        <label class="custom-control-label" for="size-6">XXL</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-                                            </div><!-- End .filter-items -->
-                                        </div><!-- End .widget-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .widget -->
-                            </div><!-- End .sidebar sidebar-shop -->
-                        </aside><!-- End .col-lg-3 -->
-                    </div><!-- End .row -->
-                </div><!-- End .container -->
+                                    <a href="checkout.html" class="btn btn-outline-primary-2 btn-order btn-block">PROSES CHECKOUT</a>
+                                </div><!-- End .summary -->
+                            </aside><!-- End .col-lg-3 -->
+                        </div><!-- End .row -->
+                    </div><!-- End .container -->
+                </div><!-- End .cart -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
 
@@ -728,15 +583,12 @@
     <script src="assets/js/jquery.waypoints.min.js"></script>
     <script src="assets/js/superfish.min.js"></script>
     <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/wNumb.js"></script>
     <script src="assets/js/bootstrap-input-spinner.js"></script>
-    <script src="assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="assets/js/nouislider.min.js"></script>
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
 </body>
 
 
-<!-- molla/category-list.html  22 Nov 2019 10:02:52 GMT -->
+<!-- molla/cart.html  22 Nov 2019 09:55:06 GMT -->
 
 </html>

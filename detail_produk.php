@@ -2,13 +2,13 @@
 <html lang="en">
 
 
-<!-- molla/category-list.html  22 Nov 2019 10:02:52 GMT -->
+<!-- molla/product.html  22 Nov 2019 09:54:50 GMT -->
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Belanja - Outfitz</title>
+    <title>Detail Produk - Outfitz</title>
     <meta name="keywords" content="HTML5 Template">
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
@@ -26,10 +26,10 @@
     <meta name="theme-color" content="#ffffff">
     <!-- Plugins CSS File -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <!-- Main CSS File -->
-    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/plugins/owl-carousel/owl.carousel.css">
     <link rel="stylesheet" href="assets/css/plugins/magnific-popup/magnific-popup.css">
+    <!-- Main CSS File -->
+    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/plugins/nouislider/nouislider.css">
 </head>
 
@@ -43,11 +43,11 @@
                             <span class="sr-only">Toggle mobile menu</span>
                             <i class="icon-bars"></i>
                         </button>
+
                         <a href="index.php" class="logo">
                             <span style="font-size: 50px; font-weight: bold; font-family: Arial, sans-serif;">Outfitz</span>
                         </a>
                     </div><!-- End .header-left -->
-
                     <nav class="main-nav" style="flex: 1; text-align: center;">
                         <ul class="menu sf-arrows" style="display: inline-flex; gap: 30px; list-style: none; margin: 0; padding: 0;">
                             <li><a href="index.php" class="sf-with-ul">Beranda</a></li>
@@ -55,18 +55,7 @@
                             <li><a href="contact.php" class="sf-with-ul">Hubungi Kami</a></li>
                         </ul>
                     </nav>
-
                     <div class="header-right d-flex align-items-center">
-                        <div class="header-search">
-                            <a href="#" class="search-toggle" role="button" title="Search"><i class="icon-search"></i></a>
-                            <form action="#" method="get">
-                                <div class="header-search-wrapper">
-                                    <label for="q" class="sr-only">Search</label>
-                                    <input type="search" class="form-control" name="q" id="q" placeholder="Search in..." required>
-                                </div><!-- End .header-search-wrapper -->
-                            </form>
-                        </div><!-- End .header-search -->
-
                         <div class="dropdown cart-dropdown">
                             <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static">
                                 <i class="icon-shopping-cart"></i>
@@ -144,253 +133,246 @@
         </header><!-- End .header -->
 
         <main class="main">
-            <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
-                <div class="container">
-                    <h1 class="page-title"><span>Belanja</span></h1>
-                </div><!-- End .container -->
-            </div><!-- End .page-header -->
-            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
-                <div class="container">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+                <div class="container d-flex align-items-center">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Belanja</li>
+                        <li class="breadcrumb-item"><a href="belanja.php">Products</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Detail Produk</li>
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
             <div class="page-content">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-lg-9">
-                            <div class="toolbox">
-                                <div class="toolbox-right">
-                                    <div class="toolbox-sort">
-                                        <label for="sortby"></label>
-                                        <div>
-                                            <option value="rating"></option>
-                                            <option value="date"></option>
-                                            </select>
-                                        </div>
-                                    </div><!-- End .toolbox-sort -->
-                                    <div class="toolbox-layout">
-                                    </div><!-- End .toolbox-layout -->
-                                </div><!-- End .toolbox-right -->
-                            </div><!-- End .toolbox -->
-
-                            <div class="products mb-3">
+                    <div class="product-details-top">
+                        <div class="row">
+                            <div class="col-md-6">
                                 <?php
-                                include 'admin/koneksi.php'; // Pastikan file koneksi ke database disertakan
+                                include "admin/koneksi.php";
 
-                                $query = "SELECT p.id_produk, p.nm_produk, p.harga, p.stok, p.ket, p.gambar, p.size, k.nm_ktg
-          FROM tb_produk p
-          JOIN tb_ktg k ON p.id_ktg = k.id_ktg";
+                                // Ambil id_produk dari parameter GET atau POST
+                                $id_produk = isset($_GET['id_produk']) ? $_GET['id_produk'] : 0;
 
-                                $result = mysqli_query($koneksi, $query);
-                                while ($row = mysqli_fetch_assoc($result)) {
+                                // Periksa apakah id_produk valid
+                                if (!$id_produk) {
+                                    die("<p>ID Produk tidak ditemukan. Silakan cek kembali.</p>");
+                                }
+
+                                // Query untuk mendapatkan data produk dan kategori
+                                $sql = "SELECT 
+            p.id_produk, 
+            p.nm_produk, 
+            p.harga, 
+            p.stok, 
+            p.ket, 
+            p.gambar, 
+            p.size, 
+            k.nm_ktg AS kategori
+        FROM tb_produk p
+        JOIN tb_ktg k ON p.id_ktg = k.id_ktg
+        WHERE p.id_produk = ?";
+
+                                $stmt = $koneksi->prepare($sql);
+
+                                if (!$stmt) {
+                                    die("<p>Kesalahan query: " . $koneksi->error . "</p>");
+                                }
+
+                                $stmt->bind_param("s", $id_produk);
+                                $stmt->execute();
+                                $result = $stmt->get_result();
+
+                                if ($result->num_rows > 0) {
+                                    // Fetch data produk
+                                    $produk = $result->fetch_assoc();
+                                    $sizes = explode(",", $produk['size']); // Pisahkan ukuran berdasarkan koma
                                 ?>
-                                    <div class="product product-list">
+                                    <div class="product-gallery product-gallery-vertical">
                                         <div class="row">
-                                            <div class="col-6 col-lg-3">
-                                                <figure class="product-media">
-                                                    <a href="product-detail.php?id=<?php echo $row['id_produk']; ?>">
-                                                        <img src="admin/produk_img/<?php echo $row['gambar']; ?>" alt="Product image" class="product-image uniform-img">
-                                                    </a>
-                                                </figure>
-                                            </div>
+                                            <figure class="product-main-image">
+                                                <img id="product-zoom" src="admin/produk_img/<?php echo htmlspecialchars($produk['gambar']); ?>" alt="product image">
+                                            </figure>
+                                            </figure><!-- End .product-main-image -->
+                                        </div><!-- End .row -->
+                                    </div><!-- End .product-gallery -->
+                            </div><!-- End .col-md-6 -->
 
-                                            <div class="col-6 col-lg-3 order-lg-last">
-                                                <div class="product-list-action">
-                                                    <div class="product-price">
-                                                        Rp. <?php echo number_format($row['harga'], 0, ',', '.'); ?>
-                                                    </div>
+                            <div class="col-md-6">
+                                <div class="product-details">
+                                    <h1 class="product-title"><?php echo htmlspecialchars($produk['nm_produk']); ?></h1><!-- End .product-title -->
 
-                                                    <div class="product-action">
-                                                        <a href="#" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
-                                                        <a href="#" class="btn-product btn-compare" title="Compare"><span>compare</span></a>
-                                                    </div>
-                                                    <a href="detail_produk.php?id_produk=<?php echo $row['id_produk']; ?>" class="btn-product btn-cart"><span>Keranjang</span></a>
-                                                </div>
-                                            </div>
+                                    <div class="ratings-container">
+                                    </div><!-- End .rating-container -->
 
-                                            <div class="col-lg-6">
-                                                <div class="product-body product-action-inner">
-                                                    <div class="product-cat">
-                                                        <a href="#"><?php echo $row['nm_ktg']; ?></a>
-                                                    </div>
-                                                    <h3 class="product-title"><a href="product-detail.php?id=<?php echo $row['id_produk']; ?>"><?php echo $row['nm_produk']; ?></a></h3>
+                                    <div class="product-price">Rp. <?php echo number_format($produk['harga'], 0, ',', '.'); ?></div>
 
-                                                    <div class="product-content">
-                                                        <p><?php echo $row['ket']; ?></p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } ?>
-                            </div><!-- End .products -->
+                                    <div class="product-content">
+                                        <p><?php echo htmlspecialchars($produk['ket']); ?></p>
+                                    </div><!-- End .product-content -->
 
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination">
-                                    <li class="page-item disabled">
-                                        <a class="page-link page-link-prev" href="#" aria-label="Previous" tabindex="-1" aria-disabled="true">
-                                            <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                                    <div class="details-filter-row details-row-size">
+                                        <label>Color:</label>
+
+                                        <div class="product-nav product-nav-thumbs">
+                                            <a href="#" class="active">
+                                                <img src="assets/images/products/single/1-thumb.jpg" alt="product desc">
+                                            </a>
+                                            <a href="#">
+                                                <img src="assets/images/products/single/2-thumb.jpg" alt="product desc">
+                                            </a>
+                                        </div><!-- End .product-nav -->
+                                    </div><!-- End .details-filter-row -->
+
+                                    <div class="details-filter-row details-row-size">
+                                        <label for="size">Size:</label>
+                                        <div class="select-custom">
+                                            <select name="size" id="size" class="form-control">
+                                                <option value="#" selected="selected">Select a size</option>
+                                                <?php foreach ($sizes as $size) { ?>
+                                                    <option value="<?php echo htmlspecialchars(strtolower($size)); ?>"><?php echo htmlspecialchars(strtoupper($size)); ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div><!-- End .select-custom -->
+                                    </div><!-- End .details-filter-row -->
+
+                                    <div class="details-filter-row details-row-size">
+                                        <label for="qty">Qty:</label>
+                                        <div class="product-details-quantity">
+                                            <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
+                                        </div><!-- End .product-details-quantity -->
+                                    </div><!-- End .details-filter-row -->
+
+                                    <div class="product-details-action">
+                                        <a href="cart.php?action=add&id_produk=<?php echo $produk['id_produk']; ?>" class="btn-product btn-cart"><span>Keranjang</span></a>
+                                    </div><!-- End .product-details-action -->
+
+                                    <div class="product-details-footer">
+                                        <div class="product-cat">
+                                            <span>Category:</span>
+                                            <a href="#"><?php echo htmlspecialchars($produk['kategori']); ?></a>
+                                        </div><!-- End .product-cat -->
+                                    </div><!-- End .product-details-footer -->
+                                </div><!-- End .product-details -->
+                            <?php
+                                } else {
+                                    echo "<p>Produk tidak ditemukan di database.</p>";
+                                }
+
+                                $stmt->close();
+                                $koneksi->close();
+                            ?>
+                            </div><!-- End .col-md-6 -->
+                        </div><!-- End .row -->
+                    </div><!-- End .product-details-top -->
+
+                    <div class="product-details-tab">
+                        <ul class="nav nav-pills justify-content-center" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab" role="tab" aria-controls="product-desc-tab" aria-selected="true">Deskripsi</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="product-info-link" data-toggle="tab" href="#product-info-tab" role="tab" aria-controls="product-info-tab" aria-selected="false">Stok</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel" aria-labelledby="product-desc-link">
+                                <div class="product-desc-content">
+                                    <h3>Tentang Produk</h3>
+                                    <p><?php echo nl2br(htmlspecialchars($produk['ket'])); ?></p> <!-- Tampilkan deskripsi produk -->
+                                </div><!-- End .product-desc-content -->
+                            </div><!-- .End .tab-pane -->
+                            <div class="tab-pane fade" id="product-info-tab" role="tabpanel" aria-labelledby="product-info-link">
+                                <div class="product-desc-content">
+                                    <h3>Informasi Stok Produk</h3>
+                                    <p>Stok: <strong><?php echo htmlspecialchars($produk['stok']); ?></strong></p> <!-- Tampilkan stok produk -->
+                                </div><!-- End .product-desc-content -->
+                            </div><!-- .End .tab-pane -->
+                        </div><!-- End .tab-content -->
+                    </div><!-- End .product-details-tab -->
+
+                    <?php
+                    include "admin/koneksi.php";
+                    $sql_related = "SELECT 
+                    id_produk, 
+                    nm_produk, 
+                    harga, 
+                    gambar 
+                FROM tb_produk 
+                WHERE id_produk != ? 
+                ORDER BY RAND() 
+                LIMIT 4";
+                    $stmt_related = $koneksi->prepare($sql_related);
+                    $stmt_related->bind_param("s", $id_produk);
+                    $stmt_related->execute();
+                    $result_related = $stmt_related->get_result();
+
+                    ?>
+                    <h2 class="title text-center mb-4">Produk Terkait</h2><!-- End .title text-center -->
+
+                    <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl"
+                        data-owl-options='{
+        "nav": false, 
+        "dots": true,
+        "margin": 20,
+        "loop": false,
+        "responsive": {
+            "0": {
+                "items":1
+            },
+            "480": {
+                "items":2
+            },
+            "768": {
+                "items":3
+            },
+            "992": {
+                "items":4
+            },
+            "1200": {
+                "items":4,
+                "nav": true,
+                "dots": false
+            }
+        }
+    }'>
+                        <?php
+                        // Perulangan untuk menampilkan produk terkait
+                        if ($result_related->num_rows > 0) {
+                            while ($related = $result_related->fetch_assoc()) {
+                        ?>
+                                <div class="product product-7 text-center">
+                                    <figure class="product-media">
+                                        <a href="detail_produk.php?id_produk=<?php echo $related['id_produk']; ?>">
+                                            <img src="admin/produk_img/<?php echo $related['gambar']; ?>" alt="<?php echo htmlspecialchars($related['nm_produk']); ?>" class="product-image">
                                         </a>
-                                    </li>
-                                    <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item-total">of 6</li>
-                                    <li class="page-item">
-                                        <a class="page-link page-link-next" href="#" aria-label="Next">
-                                            Next <span aria-hidden="true"><i class="icon-long-arrow-right"></i></span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div><!-- End .col-lg-9 -->
-                        <aside class="col-lg-3 order-lg-first">
-                            <div class="sidebar sidebar-shop">
-                                <div class="widget widget-clean">
-                                    <label>Filters:</label>
-                                    <a href="#" class="sidebar-filter-clear">Clean All</a>
-                                </div><!-- End .widget widget-clean -->
+                                        <div class="product-action">
+                                            <a href="cart.php?action=add&id_produk=<?php echo $related['id_produk']; ?>" class="btn-product btn-cart"><span>Keranjang</span></a>
+                                        </div><!-- End .product-action -->
+                                    </figure><!-- End .product-media -->
 
-                                <div class="widget widget-collapsible">
-                                    <h3 class="widget-title">
-                                        <a data-toggle="collapse" href="#widget-1" role="button" aria-expanded="true" aria-controls="widget-1">
-                                            Category
-                                        </a>
-                                    </h3><!-- End .widget-title -->
+                                    <div class="product-body">
+                                        <div class="product-cat">
+                                            <a href="#">Kategori</a>
+                                        </div><!-- End .product-cat -->
+                                        <h3 class="product-title">
+                                            <a href="detail_produk.php?id_produk=<?php echo $related['id_produk']; ?>">
+                                                <?php echo htmlspecialchars($related['nm_produk']); ?>
+                                            </a>
+                                        </h3><!-- End .product-title -->
+                                        <div class="product-price">
+                                            Rp. <?php echo number_format($related['harga'], 0, ',', '.'); ?>
+                                        </div><!-- End .product-price -->
+                                    </div><!-- End .product-body -->
+                                </div><!-- End .product -->
+                        <?php
+                            }
+                        } else {
+                            echo "<p>Produk terkait tidak tersedia.</p>";
+                        }
+                        ?>
+                    </div><!-- End .owl-carousel -->
 
-                                    <div class="collapse show" id="widget-1">
-                                        <div class="widget-body">
-                                            <div class="filter-items filter-items-count">
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-1">
-                                                        <label class="custom-control-label" for="cat-1">Dresses</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">3</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-2">
-                                                        <label class="custom-control-label" for="cat-2">T-shirts</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">0</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-3">
-                                                        <label class="custom-control-label" for="cat-3">Bags</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">4</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-4">
-                                                        <label class="custom-control-label" for="cat-4">Jackets</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">2</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-5">
-                                                        <label class="custom-control-label" for="cat-5">Shoes</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">2</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-6">
-                                                        <label class="custom-control-label" for="cat-6">Jumpers</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">1</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-7">
-                                                        <label class="custom-control-label" for="cat-7">Jeans</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">1</span>
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="cat-8">
-                                                        <label class="custom-control-label" for="cat-8">Sportwear</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                    <span class="item-count">0</span>
-                                                </div><!-- End .filter-item -->
-                                            </div><!-- End .filter-items -->
-                                        </div><!-- End .widget-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .widget -->
-
-                                <div class="widget widget-collapsible">
-                                    <h3 class="widget-title">
-                                        <a data-toggle="collapse" href="#widget-2" role="button" aria-expanded="true" aria-controls="widget-2">
-                                            Size
-                                        </a>
-                                    </h3><!-- End .widget-title -->
-
-                                    <div class="collapse show" id="widget-2">
-                                        <div class="widget-body">
-                                            <div class="filter-items">
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-1">
-                                                        <label class="custom-control-label" for="size-1">XS</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-2">
-                                                        <label class="custom-control-label" for="size-2">S</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" checked id="size-3">
-                                                        <label class="custom-control-label" for="size-3">M</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" checked id="size-4">
-                                                        <label class="custom-control-label" for="size-4">L</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-5">
-                                                        <label class="custom-control-label" for="size-5">XL</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-
-                                                <div class="filter-item">
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="size-6">
-                                                        <label class="custom-control-label" for="size-6">XXL</label>
-                                                    </div><!-- End .custom-checkbox -->
-                                                </div><!-- End .filter-item -->
-                                            </div><!-- End .filter-items -->
-                                        </div><!-- End .widget-body -->
-                                    </div><!-- End .collapse -->
-                                </div><!-- End .widget -->
-                            </div><!-- End .sidebar sidebar-shop -->
-                        </aside><!-- End .col-lg-3 -->
-                    </div><!-- End .row -->
                 </div><!-- End .container -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
@@ -434,7 +416,6 @@
         </footer><!-- End .footer -->
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
-
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
 
@@ -728,15 +709,15 @@
     <script src="assets/js/jquery.waypoints.min.js"></script>
     <script src="assets/js/superfish.min.js"></script>
     <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/wNumb.js"></script>
+    <script src="assets/js/bootstrap-input-spinner.js"></script>
+    <script src="assets/js/jquery.elevateZoom.min.js"></script>
     <script src="assets/js/bootstrap-input-spinner.js"></script>
     <script src="assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="assets/js/nouislider.min.js"></script>
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
 </body>
 
 
-<!-- molla/category-list.html  22 Nov 2019 10:02:52 GMT -->
+<!-- molla/product.html  22 Nov 2019 09:55:05 GMT -->
 
 </html>
