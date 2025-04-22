@@ -17,6 +17,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +25,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Kategori Produk - Outfitz Admin</title>
+    <title>Keranjang - Outfitz Admin</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -63,22 +64,10 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
 
-        <div class="search-bar">
-            <form class="search-form d-flex align-items-center" method="POST" action="">
-                <input type="text" name="query" placeholder="Search" title="Enter search keyword" value="<?php echo isset($_POST['query']) ? htmlspecialchars($_POST['query']) : ''; ?>">
-                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-            </form>
-        </div><!-- End Search Bar -->
-
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
 
-                <li class="nav-item d-block d-lg-none">
-                    <a class="nav-link nav-icon search-bar-toggle " href="#">
-                        <i class="bi bi-search"></i>
-                    </a>
-                </li><!-- End Search Icon-->
-
+                <li class="nav-item dropdown">
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
@@ -121,7 +110,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
             </li><!-- End Beranda Nav -->
 
             <li class="nav-item">
-                <a class="nav-link" href="kategori.php">
+                <a class="nav-link collapsed" href="kategori.php">
                     <i class="bi bi-tags"></i>
                     <span>Kategori Produk</span>
                 </a>
@@ -135,7 +124,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
             </li><!-- End Produk Page Nav -->
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="keranjang.php">
+                <a class="nav-link" href="keranjang.php">
                     <i class="bi bi-cart"></i>
                     <span>Keranjang</span>
                 </a>
@@ -167,11 +156,11 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Kategori Produk</h1>
+            <h1>Keranjang</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-                    <li class="breadcrumb-item active">Kategori Produk</li>
+                    <li class="breadcrumb-item active">Kerajang</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -180,13 +169,37 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="t_kategori.php" class="btn btn-primary mt-3">
-                            <i class="bi bi-plus-lg"></i> Tambah Data
-                        </a>
+                        <?php
+                        include 'koneksi.php';
+
+                        // Ambil data kategori
+                        $sql_kategori = "SELECT id_ktg, nm_ktg FROM tb_ktg";
+                        $result_kategori = $koneksi->query($sql_kategori);
+
+                        // Tangkap filter kategori dari GET
+                        $filter_kategori = isset($_GET['kategori']) ? $_GET['kategori'] : '';
+                        ?>
+                        <div class="filter-bar mt-3">
+                            <form class="filter-form d-flex align-items-center" method="GET" action="">
+                                <select name="kategori" class="form-select me-2" style="max-width: 200px;" title="Pilih kategori">
+                                    <option value="">-- Semua Kategori --</option>
+                                    <?php
+                                    if ($result_kategori->num_rows > 0) {
+                                        while ($row = $result_kategori->fetch_assoc()) {
+                                            $selected = ($filter_kategori == $row['id_ktg']) ? "selected" : "";
+                                            echo "<option value='" . $row['id_ktg'] . "' $selected>" . htmlspecialchars($row['nm_ktg']) . "</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                                <button type="submit" class="btn btn-primary ms-2">Filter</button>
+                            </form>
+                        </div><!-- End Filter Bar -->
+
                     </div>
                 </div>
             </div>
-        </div>
+        </div><!-- End Filter Bar -->
 
         <section class="section">
             <div class="row">
@@ -194,55 +207,51 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                     <div class="card">
                         <div class="card-body">
                             <!-- Table with stripped rows -->
+                            <?php
+                            include 'koneksi.php';
+
+                            // Query untuk mengambil data pesanan dengan join ke produk dan kategori
+                            $sql = "SELECT p.id_pesanan, p.id_produk, p.qty, p.total, u.username 
+                            FROM tb_pesanan p
+                            JOIN tb_user u ON p.id_user = u.id_user
+                            JOIN tb_produk pr ON p.id_produk = pr.id_produk
+                            JOIN tb_ktg k ON pr.id_ktg = k.id_ktg";
+
+                            // Tambahkan filter kategori jika dipilih
+                            if (!empty($filter_kategori)) {
+                                $sql .= " WHERE k.id_ktg = '$filter_kategori'";
+                            }
+
+                            $result = $koneksi->query($sql);
+                            ?>
+
                             <table class="table table-striped mt-2">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Kategori</th>
-                                        <th>Aksi</th>
+                                        <th>Kode Pesanan</th>
+                                        <th>Kode Produk</th>
+                                        <th>Jumlah</th>
+                                        <th>Total</th>
+                                        <th>Pengguna</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    include "koneksi.php";
                                     $no = 1;
-
-                                    // Cek apakah ada pencarian
-                                    $query = isset($_POST['query']) ? mysqli_real_escape_string($koneksi, $_POST['query']) : '';
-
-                                    // Query dasar
-                                    $sql_query = "SELECT id_ktg, nm_ktg FROM tb_ktg";
-
-                                    // Jika ada pencarian, tambahkan kondisi WHERE
-                                    if (!empty($query)) {
-                                        $sql_query .= " WHERE nm_ktg LIKE '%$query%'";
-                                    }
-
-                                    $sql = mysqli_query($koneksi, $sql_query);
-
-                                    if (mysqli_num_rows($sql) > 0) {
-                                        while ($hasil = mysqli_fetch_array($sql)) {
-                                    ?>
-                                            <tr>
-                                                <td><?php echo $no++; ?></td>
-                                                <td><?php echo $hasil['nm_ktg']; ?></td>
-                                                <td>
-                                                    <a href="e_kategori.php?id=<?php echo $hasil['id_ktg']; ?>" class="btn btn-warning">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                    </a>
-                                                    <a href="h_kategori.php?id=<?php echo $hasil['id_ktg']; ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
-                                                        <i class="bi bi-trash"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        <?php
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<tr>";
+                                            echo "<td>" . $no++ . "</td>";
+                                            echo "<td>" . $row["id_pesanan"] . "</td>";
+                                            echo "<td>" . $row["id_produk"] . "</td>";
+                                            echo "<td>" . $row["qty"] . "</td>";
+                                            echo "<td>Rp " . number_format($row["total"], 0, ",", ".") . "</td>";
+                                            echo "<td>" . $row["username"] . "</td>";
+                                            echo "</tr>";
                                         }
                                     } else {
-                                        ?>
-                                        <tr>
-                                            <td colspan="3" class="text-center">Belum Ada Data</td>
-                                        </tr>
-                                    <?php
+                                        echo "<tr><td colspan='6' class='text-center'>Belum ada data pesanan</td></tr>";
                                     }
                                     ?>
                                 </tbody>

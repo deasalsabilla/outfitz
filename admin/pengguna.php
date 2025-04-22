@@ -17,6 +17,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
     exit;
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +25,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Kategori Produk - Outfitz Admin</title>
+    <title>Pengguna- Outfitz Admin</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -121,7 +122,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
             </li><!-- End Beranda Nav -->
 
             <li class="nav-item">
-                <a class="nav-link" href="kategori.php">
+                <a class="nav-link collapsed" href="kategori.php">
                     <i class="bi bi-tags"></i>
                     <span>Kategori Produk</span>
                 </a>
@@ -155,7 +156,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                 </a>
             </li><!-- End Laporan Page Nav -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pengguna.php">
+                <a class="nav-link" href="pengguna.php">
                     <i class="bi bi-people"></i>
                     <span>Pengguna</span>
                 </a>
@@ -167,11 +168,11 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Kategori Produk</h1>
+            <h1>Pengguna</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-                    <li class="breadcrumb-item active">Kategori Produk</li>
+                    <li class="breadcrumb-item active">Pengguna</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -180,7 +181,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <a href="t_kategori.php" class="btn btn-primary mt-3">
+                        <a href="t_pengguna.php" class="btn btn-primary mt-3">
                             <i class="bi bi-plus-lg"></i> Tambah Data
                         </a>
                     </div>
@@ -198,7 +199,8 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Kategori</th>
+                                        <th>Username</th>
+                                        <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -207,15 +209,15 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                                     include "koneksi.php";
                                     $no = 1;
 
-                                    // Cek apakah ada pencarian
+                                    // Cek apakah ada input pencarian
                                     $query = isset($_POST['query']) ? mysqli_real_escape_string($koneksi, $_POST['query']) : '';
 
                                     // Query dasar
-                                    $sql_query = "SELECT id_ktg, nm_ktg FROM tb_ktg";
+                                    $sql_query = "SELECT id_user, username, sts FROM tb_user";
 
-                                    // Jika ada pencarian, tambahkan kondisi WHERE
+                                    // Tambahkan pencarian jika input tidak kosong
                                     if (!empty($query)) {
-                                        $sql_query .= " WHERE nm_ktg LIKE '%$query%'";
+                                        $sql_query .= " WHERE username LIKE '%$query%'";
                                     }
 
                                     $sql = mysqli_query($koneksi, $sql_query);
@@ -225,12 +227,10 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                                     ?>
                                             <tr>
                                                 <td><?php echo $no++; ?></td>
-                                                <td><?php echo $hasil['nm_ktg']; ?></td>
+                                                <td><?php echo $hasil['username']; ?></td>
+                                                <td><?php echo $hasil['sts']; ?></td>
                                                 <td>
-                                                    <a href="e_kategori.php?id=<?php echo $hasil['id_ktg']; ?>" class="btn btn-warning">
-                                                        <i class="bi bi-pencil-square"></i>
-                                                    </a>
-                                                    <a href="h_kategori.php?id=<?php echo $hasil['id_ktg']; ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
+                                                    <a href="h_pengguna.php?id=<?php echo $hasil['id_user']; ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Data?')">
                                                         <i class="bi bi-trash"></i>
                                                     </a>
                                                 </td>
@@ -240,7 +240,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                                     } else {
                                         ?>
                                         <tr>
-                                            <td colspan="3" class="text-center">Belum Ada Data</td>
+                                            <td colspan="4" class="text-center">Data tidak ditemukan</td>
                                         </tr>
                                     <?php
                                     }
@@ -264,7 +264,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
             &copy; Copyright <strong><span>Outfitz</span></strong>. All Rights Reserved
         </div>
         <div class="credits">
-            Designed by <a href="https://instagram.com/meaffq/" target="_blank">Afi Qur'aini A.S</a>
+            Designed by <a href="https://instagram.com/meaffq/" target="_blank">Afi Qur'aini A S</a>
         </div>
     </footer><!-- End Footer -->
 

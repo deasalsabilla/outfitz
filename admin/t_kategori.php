@@ -2,6 +2,20 @@
 session_start();
 include "koneksi.php";
 
+// Cek apakah sudah login
+if (!isset($_SESSION["login"])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Cek apakah status tersedia dan pastikan user adalah admin
+if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
+    echo "<script>
+    alert('Akses ditolak! Halaman ini hanya untuk Admin.');
+    window.location.href='login.php';
+  </script>";
+    exit;
+}
 if (isset($_POST['simpan'])) {
     $auto = mysqli_query($koneksi, "select max(id_ktg) as max_code from tb_ktg");
     $hasil = mysqli_fetch_array($auto);
@@ -79,8 +93,8 @@ if (isset($_POST['simpan'])) {
                 <li class="nav-item dropdown pe-3">
 
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                        <img src="assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
-                    </a><!-- End Profile Image Icon -->
+                        <img src="assets/img/user.jpg" alt="Profile" class="rounded-circle">
+                    </a><!-- End Profile Iamge Icon -->
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
@@ -88,7 +102,10 @@ if (isset($_POST['simpan'])) {
                             <span>Admin</span>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex align-items-center" href="logout.php">
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
                                 <i class="bi bi-box-arrow-right"></i>
                                 <span>Sign Out</span>
                             </a>
