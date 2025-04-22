@@ -1,14 +1,45 @@
+<?php
+
+require 'admin/koneksi.php';
+require 'function.php';
+$sql = mysqli_query($koneksi, "select * from tb_user");
+$data = mysqli_fetch_array($sql);
+
+if (isset($_POST["login"])) {
+    $username = $_POST["userlog"];
+    $password = $_POST["passlog"];
+
+    $result = mysqli_query($koneksi, "SELECT * FROM tb_user WHERE username='$username'");
+
+    // cek username
+    if (mysqli_num_rows($result) === 1) {
+        // cek password
+        $row = mysqli_fetch_assoc($result);
+        if (password_verify($password, $row["password"])) {
+            // set session
+            $_SESSION["login"] = true;
+            $_SESSION["username"] = $row["username"];
+            $_SESSION["id_user"] = $row["id_user"];
+            header("refresh:0, index.php");
+        } else {
+            echo "<script>alert('Username atau password yang anda masukkan salah')</script>";
+        }
+    } else {
+        echo "<script>alert('Username atau password yang anda masukkan salah')</script>";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 
-<!-- molla/product.html  22 Nov 2019 09:54:50 GMT -->
+<!-- molla/login.html  22 Nov 2019 10:04:03 GMT -->
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Detail Produk - Outfitz</title>
+    <title>Login & Register - Outfitz</title>
     <meta name="keywords" content="HTML5 Template">
     <meta name="description" content="Molla - Bootstrap eCommerce Template">
     <meta name="author" content="p-themes">
@@ -26,14 +57,23 @@
     <meta name="theme-color" content="#ffffff">
     <!-- Plugins CSS File -->
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/plugins/owl-carousel/owl.carousel.css">
-    <link rel="stylesheet" href="assets/css/plugins/magnific-popup/magnific-popup.css">
     <!-- Main CSS File -->
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/plugins/nouislider/nouislider.css">
 </head>
 
 <body>
+<?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register'])) {
+        if (registrasi($_POST)) {
+            echo "<script>alert('User baru berhasil ditambahkan');";
+            echo "window.location.href = 'user.php';</script>";
+            exit;
+        } else {
+            echo "<script>alert('Registrasi gagal');</script>";
+        }
+    }
+    ?>
+
     <div class="page-wrapper">
         <header class="header">
             <div class="header-middle sticky-header">
@@ -131,237 +171,79 @@
                 </div><!-- End .container -->
             </div><!-- End .header-middle -->
         </header><!-- End .header -->
-
         <main class="main">
             <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
-                <div class="container d-flex align-items-center">
+                <div class="container">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="index.php">Beranda</a></li>
-                        <li class="breadcrumb-item"><a href="belanja.php">Products</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Detail Produk</li>
+                        <li class="breadcrumb-item"><a href="belanja.php">Belanja</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Login</li>
                     </ol>
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
-            <div class="page-content">
+            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
                 <div class="container">
-                    <div class="product-details-top">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <?php
-                                include "admin/koneksi.php";
+                    <div class="form-box">
+                        <div class="form-tab">
+                            <ul class="nav nav-pills nav-fill" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="signin-tab-2" data-toggle="tab" href="#signin-2" role="tab" aria-controls="signin-2" aria-selected="false">Sign In</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2" aria-selected="true">Register</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
+                                    <form action="#" method="post">
+                                        <div class="form-group">
+                                            <label for="userlog">Username</label>
+                                            <input type="text" class="form-control" id="userlog" name="userlog" required>
+                                        </div><!-- End .form-group -->
 
-                                // Ambil id_produk dari parameter GET atau POST
-                                $id_produk = isset($_GET['id_produk']) ? $_GET['id_produk'] : 0;
+                                        <div class="form-group">
+                                            <label for="passlog">Password *</label>
+                                            <input type="password" class="form-control" id="passlog" name="passlog" required>
+                                        </div><!-- End .form-group -->
 
-                                // Periksa apakah id_produk valid
-                                if (!$id_produk) {
-                                    die("<p>ID Produk tidak ditemukan. Silakan cek kembali.</p>");
-                                }
+                                        <div class="form-footer">
+                                            <button type="submit" class="btn btn-outline-primary-2" name="login">
+                                                <span>LOG IN</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </button>
+                                        </div><!-- End .form-footer -->
+                                    </form>
+                                </div><!-- .End .tab-pane -->
+                                <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+                                    <form action="#" method="post">
+                                        <div class="form-group">
+                                            <label for="username">Username</label>
+                                            <input type="text" class="form-control" id="username" name="username" required>
+                                        </div><!-- End .form-group -->
 
-                                // Query untuk mendapatkan data produk dan kategori
-                                $sql = "SELECT 
-            p.id_produk, 
-            p.nm_produk, 
-            p.harga, 
-            p.stok, 
-            p.ket, 
-            p.gambar, 
-            p.size, 
-            k.nm_ktg AS kategori
-        FROM tb_produk p
-        JOIN tb_ktg k ON p.id_ktg = k.id_ktg
-        WHERE p.id_produk = ?";
+                                        <div class="form-group">
+                                            <label for="password">Password</label>
+                                            <input type="password" class="form-control" id="password" name="password" required>
+                                        </div><!-- End .form-group -->
+                                        <div class="form-group">
+                                            <label for="password2">Konfirmasi Password</label>
+                                            <input type="password" class="form-control" id="password2" name="password2" required>
+                                        </div><!-- End .form-group -->
 
-                                $stmt = $koneksi->prepare($sql);
-
-                                if (!$stmt) {
-                                    die("<p>Kesalahan query: " . $koneksi->error . "</p>");
-                                }
-
-                                $stmt->bind_param("s", $id_produk);
-                                $stmt->execute();
-                                $result = $stmt->get_result();
-
-                                if ($result->num_rows > 0) {
-                                    // Fetch data produk
-                                    $produk = $result->fetch_assoc();
-                                    $sizes = explode(",", $produk['size']); // Pisahkan ukuran berdasarkan koma
-                                ?>
-                                    <div class="product-gallery product-gallery-vertical">
-                                        <div class="row">
-                                            <figure class="product-main-image">
-                                                <img id="product-zoom" src="admin/produk_img/<?php echo htmlspecialchars($produk['gambar']); ?>" alt="product image">
-                                            </figure>
-                                            </figure><!-- End .product-main-image -->
-                                        </div><!-- End .row -->
-                                    </div><!-- End .product-gallery -->
-                            </div><!-- End .col-md-6 -->
-
-                            <div class="col-md-6">
-                                <div class="product-details">
-                                    <h1 class="product-title"><?php echo htmlspecialchars($produk['nm_produk']); ?></h1><!-- End .product-title -->
-
-                                    <div class="ratings-container">
-                                    </div><!-- End .rating-container -->
-
-                                    <div class="product-price">Rp. <?php echo number_format($produk['harga'], 0, ',', '.'); ?></div>
-
-                                    <div class="product-content">
-                                        <p><?php echo htmlspecialchars($produk['ket']); ?></p>
-                                    </div><!-- End .product-content -->
-
-                                    <div class="details-filter-row details-row-size">
-                                        <label for="size">Size:</label>
-                                        <div class="select-custom">
-                                            <select name="size" id="size" class="form-control">
-                                                <option value="#" selected="selected">Select a size</option>
-                                                <?php foreach ($sizes as $size) { ?>
-                                                    <option value="<?php echo htmlspecialchars(strtolower($size)); ?>"><?php echo htmlspecialchars(strtoupper($size)); ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </div><!-- End .select-custom -->
-                                    </div><!-- End .details-filter-row -->
-
-                                    <div class="details-filter-row details-row-size">
-                                        <label for="qty">Qty:</label>
-                                        <div class="product-details-quantity">
-                                            <input type="number" id="qty" class="form-control" value="1" min="1" max="10" step="1" data-decimals="0" required>
-                                        </div><!-- End .product-details-quantity -->
-                                    </div><!-- End .details-filter-row -->
-
-                                    <div class="product-details-action">
-                                        <a href="cart.php?action=add&id_produk=<?php echo $produk['id_produk']; ?>" class="btn-product btn-cart"><span>Keranjang</span></a>
-                                    </div><!-- End .product-details-action -->
-
-                                    <div class="product-details-footer">
-                                        <div class="product-cat">
-                                            <span>Category:</span>
-                                            <a href="#"><?php echo htmlspecialchars($produk['kategori']); ?></a>
-                                        </div><!-- End .product-cat -->
-                                    </div><!-- End .product-details-footer -->
-                                </div><!-- End .product-details -->
-                            <?php
-                                } else {
-                                    echo "<p>Produk tidak ditemukan di database.</p>";
-                                }
-
-                                $stmt->close();
-                                $koneksi->close();
-                            ?>
-                            </div><!-- End .col-md-6 -->
-                        </div><!-- End .row -->
-                    </div><!-- End .product-details-top -->
-
-                    <div class="product-details-tab">
-                        <ul class="nav nav-pills justify-content-center" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="product-desc-link" data-toggle="tab" href="#product-desc-tab" role="tab" aria-controls="product-desc-tab" aria-selected="true">Deskripsi</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="product-info-link" data-toggle="tab" href="#product-info-tab" role="tab" aria-controls="product-info-tab" aria-selected="false">Stok</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="product-desc-tab" role="tabpanel" aria-labelledby="product-desc-link">
-                                <div class="product-desc-content">
-                                    <h3>Tentang Produk</h3>
-                                    <p><?php echo nl2br(htmlspecialchars($produk['ket'])); ?></p> <!-- Tampilkan deskripsi produk -->
-                                </div><!-- End .product-desc-content -->
-                            </div><!-- .End .tab-pane -->
-                            <div class="tab-pane fade" id="product-info-tab" role="tabpanel" aria-labelledby="product-info-link">
-                                <div class="product-desc-content">
-                                    <h3>Informasi Stok Produk</h3>
-                                    <p>Stok: <strong><?php echo htmlspecialchars($produk['stok']); ?></strong></p> <!-- Tampilkan stok produk -->
-                                </div><!-- End .product-desc-content -->
-                            </div><!-- .End .tab-pane -->
-                        </div><!-- End .tab-content -->
-                    </div><!-- End .product-details-tab -->
-
-                    <?php
-                    include "admin/koneksi.php";
-                    $sql_related = "SELECT 
-                    id_produk, 
-                    nm_produk, 
-                    harga, 
-                    gambar 
-                FROM tb_produk 
-                WHERE id_produk != ? 
-                ORDER BY RAND() 
-                LIMIT 4";
-                    $stmt_related = $koneksi->prepare($sql_related);
-                    $stmt_related->bind_param("s", $id_produk);
-                    $stmt_related->execute();
-                    $result_related = $stmt_related->get_result();
-
-                    ?>
-                    <h2 class="title text-center mb-4">Produk Terkait</h2><!-- End .title text-center -->
-
-                    <div class="owl-carousel owl-simple carousel-equal-height carousel-with-shadow" data-toggle="owl"
-                        data-owl-options='{
-        "nav": false, 
-        "dots": true,
-        "margin": 20,
-        "loop": false,
-        "responsive": {
-            "0": {
-                "items":1
-            },
-            "480": {
-                "items":2
-            },
-            "768": {
-                "items":3
-            },
-            "992": {
-                "items":4
-            },
-            "1200": {
-                "items":4,
-                "nav": true,
-                "dots": false
-            }
-        }
-    }'>
-                        <?php
-                        // Perulangan untuk menampilkan produk terkait
-                        if ($result_related->num_rows > 0) {
-                            while ($related = $result_related->fetch_assoc()) {
-                        ?>
-                                <div class="product product-7 text-center">
-                                    <figure class="product-media">
-                                        <a href="detail_produk.php?id_produk=<?php echo $related['id_produk']; ?>">
-                                            <img src="admin/produk_img/<?php echo $related['gambar']; ?>" alt="<?php echo htmlspecialchars($related['nm_produk']); ?>" class="product-image">
-                                        </a>
-                                        <div class="product-action">
-                                            <a href="cart.php?action=add&id_produk=<?php echo $related['id_produk']; ?>" class="btn-product btn-cart"><span>Keranjang</span></a>
-                                        </div><!-- End .product-action -->
-                                    </figure><!-- End .product-media -->
-
-                                    <div class="product-body">
-                                        <div class="product-cat">
-                                            <a href="#">Kategori</a>
-                                        </div><!-- End .product-cat -->
-                                        <h3 class="product-title">
-                                            <a href="detail_produk.php?id_produk=<?php echo $related['id_produk']; ?>">
-                                                <?php echo htmlspecialchars($related['nm_produk']); ?>
-                                            </a>
-                                        </h3><!-- End .product-title -->
-                                        <div class="product-price">
-                                            Rp. <?php echo number_format($related['harga'], 0, ',', '.'); ?>
-                                        </div><!-- End .product-price -->
-                                    </div><!-- End .product-body -->
-                                </div><!-- End .product -->
-                        <?php
-                            }
-                        } else {
-                            echo "<p>Produk terkait tidak tersedia.</p>";
-                        }
-                        ?>
-                    </div><!-- End .owl-carousel -->
-
+                                        <div class="form-footer">
+                                            <button type="submit" class="btn btn-outline-primary-2" name="register">
+                                                <span>SIGN UP</span>
+                                                <i class="icon-long-arrow-right"></i>
+                                            </button>
+                                        </div><!-- End .form-footer -->
+                                    </form>
+                                </div><!-- .End .tab-pane -->
+                            </div><!-- End .tab-content -->
+                        </div><!-- End .form-tab -->
+                    </div><!-- End .form-box -->
                 </div><!-- End .container -->
-            </div><!-- End .page-content -->
+            </div><!-- End .login-page section-bg -->
         </main><!-- End .main -->
 
         <footer class="footer">
@@ -403,6 +285,7 @@
         </footer><!-- End .footer -->
     </div><!-- End .page-wrapper -->
     <button id="scroll-top" title="Back to Top"><i class="icon-arrow-up"></i></button>
+
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
 
@@ -696,15 +579,11 @@
     <script src="assets/js/jquery.waypoints.min.js"></script>
     <script src="assets/js/superfish.min.js"></script>
     <script src="assets/js/owl.carousel.min.js"></script>
-    <script src="assets/js/bootstrap-input-spinner.js"></script>
-    <script src="assets/js/jquery.elevateZoom.min.js"></script>
-    <script src="assets/js/bootstrap-input-spinner.js"></script>
-    <script src="assets/js/jquery.magnific-popup.min.js"></script>
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
 </body>
 
 
-<!-- molla/product.html  22 Nov 2019 09:55:05 GMT -->
+<!-- molla/login.html  22 Nov 2019 10:04:03 GMT -->
 
 </html>
