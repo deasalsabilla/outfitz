@@ -28,9 +28,9 @@ if (!$data) {
 }
 
 if (isset($_POST['simpan'])) {
-    $nm_kategori = $_POST['nm_kategori'];
+    $nm_ktg = $_POST['nm_ktg'];
 
-    $query = mysqli_query($koneksi, "UPDATE tb_ktg SET nm_ktg = '$nm_kategori' WHERE id_ktg = '$id'");
+    $query = mysqli_query($koneksi, "UPDATE tb_ktg SET nm_ktg = '$nm_ktg' WHERE id_ktg = '$id'");
     if ($query) {
         echo "<script>alert('Data berhasil diubah!'); window.location.href = 'kategori.php';</script>";
     } else {
@@ -199,8 +199,8 @@ if (isset($_POST['simpan'])) {
                         <div class="card-body">
                             <form class="row g-3 mt-2" method="post">
                                 <div class="col-12">
-                                    <label for="nm_kategori" class="form-label">Nama Kategori</label>
-                                    <input type="text" class="form-control" id="nm_kategori" name="nm_kategori" placeholder="Masukkan Nama Kategori Produk" value="<?php echo htmlspecialchars($data['nm_ktg']); ?>">
+                                    <label for="nm_ktg" class="form-label">Nama Kategori</label>
+                                    <input type="text" class="form-control" id="nm_ktg" name="nm_ktg" placeholder="Masukkan Nama Kategori Produk" value="<?php echo htmlspecialchars($data['nm_ktg']); ?>">
                                 </div>
                                 <div class="text-center">
                                     <button type="reset" class="btn btn-secondary">Reset</button>
