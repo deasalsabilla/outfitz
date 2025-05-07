@@ -184,7 +184,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                 </div>
               </div>
             </div>
-            <!-- End Welcome Card -->
+            <!-- End Welcome Card --> 
 
             <!-- Orders Card -->
             <div class="col-xxl-4 col-md-6">
