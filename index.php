@@ -130,11 +130,15 @@
                                 </div><!-- End .dropdown-cart-total -->
                             </div><!-- End .dropdown-menu -->
                         </div><!-- End .cart-dropdown -->
-                        <div class="user-icon">
-                            <a href="user-profile.html" class="user-link">
-                                <i class="icon-user"></i>
+                        <div class="dropdown user-dropdown">
+                            <a href="#" class="dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="User">
+                                <i class="icon-user" style="color: #fff;"></i>
                             </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="logout.php">Logout</a>
+                            </div>
                         </div>
+
                     </div><!-- End .header-right -->
                 </div><!-- End .container-fluid -->
             </div><!-- End .header-middle -->
