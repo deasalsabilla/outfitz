@@ -224,7 +224,7 @@ if (!isset($_SESSION["status"]) || $_SESSION["status"] !== "admin") {
                                     if (!empty($query)) {
                                         $sql_query .= " WHERE tb_produk.nm_produk LIKE '%$query%' 
                     OR tb_kategori.nm_ktg LIKE '%$query%'
-                    OR tb_produk.ket LIKE '%$query%'";
+                    OR tb_produk.ket LIKE '%$query%'"  ;
                                     }
 
                                     $sql = mysqli_query($koneksi, $sql_query);
