@@ -48,7 +48,7 @@
                     </div><!-- End .header-left -->
                     <nav class="main-nav" style="flex: 1; text-align: center;">
                         <ul class="menu sf-arrows" style="display: inline-flex; gap: 30px; list-style: none; margin: 0; padding: 0;">
-                            <li><a href="index.php" class="sf-with-ul">Home</a></li>
+                            <li><a href="index.php" class="sf-with-ul">Beranda</a></li>
                             <li class="megamenu-container active"><a href="belanja.php" class="sf-with-ul">Belanja</a></li>
                             <li><a href="contact.php" class="sf-with-ul">Hubungi Kami</a></li>
                         </ul>
